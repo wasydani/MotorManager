@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MotorManager</string>
+    <string name="textview">TextView</string>
+    <string name="connect">"Connected"</string>
+    <string name="disconnected">"Disconnected"</string>
+    <string name="connecting">"Connecting..."</string>
+    <string name="conn_fail">"Connection failed"</string>
+</resources>
