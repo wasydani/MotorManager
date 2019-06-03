@@ -33,19 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static String EXTRA_MESSAGE;
     public String msg;
-    //reaction after selection of an BT-Device to connect
-    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
-            // Get the device MAC address, the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
-            final String address = info.substring(info.length() - 17);
 
-            mBluetoothStatus.setText(R.string.connecting);
-            mConnect.setText(R.string.connecting);
-            mDeviceList.setVisibility(View.INVISIBLE);
-            mBTManager.connect(address);
-        }
-    };
 
     public void setMsg(String msg) {
         this.msg = msg;
@@ -166,6 +154,20 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
         }
     }
+
+    //reaction after selection of an BT-Device to connect
+    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
+            // Get the device MAC address, the last 17 chars in the View
+            String info = ((TextView) v).getText().toString();
+            final String address = info.substring(info.length() - 17);
+
+            mBluetoothStatus.setText(R.string.connecting);
+            mConnect.setText(R.string.connecting);
+            mDeviceList.setVisibility(View.INVISIBLE);
+            mBTManager.connect(address);
+        }
+    };
 
     public void setConnectButtons(boolean isConnected){
             mConnect.setChecked(isConnected);
