@@ -1,12 +1,14 @@
 package de.blitzkrieg.motormanager;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,9 +31,25 @@ public class MainActivity extends AppCompatActivity {
     private TextView mKmh;
     private TextView mRpm;
 
-    public MainActivity() {
-    }
+    public static String EXTRA_MESSAGE;
+    public String msg;
+    //reaction after selection of an BT-Device to connect
+    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
+            // Get the device MAC address, the last 17 chars in the View
+            String info = ((TextView) v).getText().toString();
+            final String address = info.substring(info.length() - 17);
 
+            mBluetoothStatus.setText(R.string.connecting);
+            mConnect.setText(R.string.connecting);
+            mDeviceList.setVisibility(View.INVISIBLE);
+            mBTManager.connect(address);
+        }
+    };
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -61,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 mBluetoothStatus.setText(msg);
                 mAnzParcels++;
                 mTextAnzParcels.setText(mAnzParcels + "");
+                setMsg(msg);
+                int msgZ = Integer.parseInt(msg);
+                do {
+                    if (msgZ < 300) {
+                        mKmh.setText(msg);
+                    } else {
+                        mRpm.setText(msg);
+                    }
+
+                } while (msgZ != 0);
             }
 
             @Override
@@ -106,11 +134,20 @@ public class MainActivity extends AppCompatActivity {
         {
             public void onClick(View v)
             {
-                pairedDevicesList();
+                if (mDeviceList.getVisibility() != View.VISIBLE) {
+                    pairedDevicesList();
+
+                } else {
+                    if (mBTManager != null) {
+                        mBTManager.cancel();
+                        setConnectButtons(false);
+                    }
+                    mDeviceList.setVisibility(View.GONE);
+
+                }
+                ;
             }
         });
-
-
 
         //we don't want see the keyboard emulator on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -118,12 +155,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void pairedDevicesList() {
         mDeviceList.setVisibility(View.VISIBLE);
-
         ArrayList<String> list = mBTManager.getPairedDeviceInfos();
 
-        if (list.size()>0) {
+        if (list.size() > 0) {
             final ArrayAdapter adapter;
-            adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
+            adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
             mDeviceList.setAdapter(adapter);
             mDeviceList.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
         } else {
@@ -131,34 +167,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //reaction after selection of an BT-Device to connect
-    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener()
-    {
-        public void onItemClick (AdapterView av, View v, int arg2, long arg3)
-        {
-            // Get the device MAC address, the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
-            final String address = info.substring(info.length() - 17);
-
-            mBluetoothStatus.setText(R.string.connecting);
-            mDeviceList.setVisibility(View.INVISIBLE);
-            mBTManager.connect(address);
-        }
-    };
-
     public void setConnectButtons(boolean isConnected){
             mConnect.setChecked(isConnected);
-            mConnect.setText(R.string.connect);
 
             if (!isConnected) {
                 mBluetoothStatus.setText("-");
                 mAnzParcels=0L;
                 mTextAnzParcels.setText(mAnzParcels + "");
-                mConnect.setText(R.string.disconnected);
+                mConnect.setText(R.string.connect);
             }
     }
 
 
-
+    public void changeScreen(View view) {
+        Intent intent = new Intent(this, Main2Activity.class);
+        String message = "0000";
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
     }
 

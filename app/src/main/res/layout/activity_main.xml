@@ -87,6 +87,7 @@
     </GridLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="379dp"
         android:layout_height="428dp"
         android:layout_marginStart="16dp"
@@ -155,8 +156,9 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:switchPadding="10dp"
-                android:text="is Connected"
-                android:textAlignment="viewStart" />
+                android:text="@string/connect"
+                android:textAlignment="viewStart"
+                android:textOff="@string/disconnected" />
         </LinearLayout>
 
         <LinearLayout
@@ -175,5 +177,19 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="16dp"
+        android:baselineAlignBottom="true"
+        android:clickable="true"
+        android:onClick="changeScreen"
+        app:backgroundTint="#F44336"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_tempo" />
 
 </android.support.constraint.ConstraintLayout>
